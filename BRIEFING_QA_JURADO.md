@@ -6,7 +6,7 @@ Documento interno del equipo. Todas las cifras de aquí salen del código (`engi
 
 ## 1. Lo que los 4 deben poder decir de memoria (30 segundos)
 
-> ATLANIA es un atlas que compara sitios de la Tierra con 6 lugares reales de la Luna y Marte. Para cada sitio cruzamos clima de **NASA POWER** y relieve del **Copernicus DEM GLO-90**, y calculamos un índice de similitud de 0 a 100 en 5 dimensiones: topografía, geología, térmica, hidrología/hielo y entorno subterráneo. Además de dar el puntaje, el sistema dice explícitamente **en qué falla la analogía** (gravedad, atmósfera, radiación). El resultado más fuerte para Ecuador: los **tubos de lava de Galápagos** son el segundo mejor análogo de los 35 sitios, comparados con los pozos de lava de **Mare Tranquillitatis** en la Luna (87.5/100).
+> ATLANIA es un atlas que compara sitios de la Tierra con 6 lugares reales de la Luna y Marte. Para cada sitio cruzamos clima de **NASA POWER** y relieve del **Copernicus DEM GLO-90**, y calculamos un índice de similitud de 0 a 100 en 5 dimensiones: topografía, geología, térmica, hidrología/hielo y entorno subterráneo. Además de dar el puntaje, el sistema dice explícitamente **en qué falla la analogía** (gravedad, atmósfera, radiación). El resultado más fuerte para Ecuador: los **tubos de lava de Galápagos** son el segundo mejor análogo de los **60 sitios del catálogo**, comparados con los pozos de lava de **Mare Tranquillitatis** en la Luna (87.5/100).
 
 ---
 
@@ -14,15 +14,15 @@ Documento interno del equipo. Todas las cifras de aquí salen del código (`engi
 
 | Dato | Valor |
 | :--- | :--- |
-| Sitios terrestres evaluados | **35** (8 en Ecuador) |
+| Sitios terrestres evaluados | **60** (**12 en Ecuador**) |
 | Blancos extraterrestres | **6** (3 Luna, 3 Marte) |
-| Sitios con clima real de NASA POWER | **35 / 35** |
-| Sitios con relieve real del DEM | **35 / 35** |
+| Sitios con clima real de NASA POWER | **60 / 60** |
+| Sitios con relieve real del DEM | **60 / 60** |
 | Parámetros de NASA POWER | **7**: `T2M_MAX`, `T2M_MIN`, `PRECTOTCORR`, `WS10M`, `RH2M`, `ALLSKY_SFC_SW_DWN`, `PS` |
 | Muestreo de relieve | 5 puntos (centro, N, S, E, O) separados 0.01° (~1.1 km) |
-| Pruebas automatizadas | **45** tests en Python (`pytest`) + 4 archivos de tests en el frontend |
+| Pruebas automatizadas | **270** tests en Python (`pytest`) + **53** tests en el frontend (`node --test`) |
 | Mejor sitio global | Mauna Loa / HI-SEAS (EE. UU.) — 89.1 vs Mare Tranquillitatis |
-| Mejor sitio de Ecuador | Galápagos Lava Tubes — **87.5** vs Mare Tranquillitatis (**#2 de 35**) |
+| Mejor sitio de Ecuador | Galápagos Lava Tubes — **87.5** vs Mare Tranquillitatis (**#2 de 60**) |
 | Gravedad | Tierra 9.81 · Marte 3.71 · Luna 1.62 m/s² |
 | Presión | Tierra 101.3 kPa · Chimborazo (~5000 m) ~56 kPa · Marte ~0.65 kPa · Luna 0 |
 
@@ -37,7 +37,7 @@ Documento interno del equipo. Todas las cifras de aquí salen del código (`engi
 | Olympus Mons (flanco) | Marte | Volcán escudo, coladas de lava y posibles tubos | MGS MOLA + MRO HiRISE |
 | Valles Marineris | Marte | Cañón tectónico profundo con sulfatos y paredes estratificadas | MRO HiRISE + CRISM |
 
-### Los 8 sitios de Ecuador (resultados reales)
+### Los 12 sitios de Ecuador (resultados reales)
 
 | Sitio | ASI | Mejor análogo de |
 | :--- | :--- | :--- |
@@ -45,9 +45,13 @@ Documento interno del equipo. Todas las cifras de aquí salen del código (`engi
 | Sierra Negra (Isabela) | 76.7 | Mare Tranquillitatis (Luna) |
 | Quilotoa | 68.4 | Valles Marineris (Marte) |
 | El Reventador | 63.1 | Valles Marineris (Marte) |
+| Fernandina Caldera (Galápagos) | 62.2 | Mare Tranquillitatis (Luna) |
+| El Altar (Laguna Amarilla) | 61.5 | Valles Marineris (Marte) |
+| Alcedo Hydrothermal Caldera (Isabela) | 61.2 | Valles Marineris (Marte) |
 | Antisana | 59.9 | Shackleton (Luna) |
 | Chimborazo | 59.6 | Shackleton (Luna) |
 | Cotopaxi | 59.5 | Mons Mouton (Luna) |
+| Cayambe | 58.3 | Shackleton (Luna) |
 | Sangay | 58.0 | Valles Marineris (Marte) |
 
 ---
@@ -105,15 +109,15 @@ Un juez científico va a buscar exactamente esto. **Hay que decirlo con segurida
 
 | Dato | Origen | Estado |
 | :--- | :--- | :--- |
-| Clima (7 parámetros) | NASA POWER, en vivo | **Medido** (35/35 sitios) |
-| Elevación, pendiente, rugosidad | Copernicus DEM GLO-90, en vivo | **Medido** (35/35 sitios) |
-| Geología, hielo, historia acuosa, tubos de lava, refugio de los 35 sitios del catálogo | Asignados por el equipo según literatura | **Supuesto documentado** (en el código se llaman "scenario priors") |
+| Clima (7 parámetros) | NASA POWER, en vivo | **Medido** (60/60 sitios) |
+| Elevación, pendiente, rugosidad | Copernicus DEM GLO-90, en vivo | **Medido** (60/60 sitios) |
+| Geología, hielo, historia acuosa, tubos de lava, refugio de los 60 sitios del catálogo | Asignados por el equipo según literatura | **Supuesto documentado** (en el código se llaman "scenario priors") |
 | Perfiles de la Luna y Marte | Constantes y rangos de misiones (LRO, MRO, Perseverance) | Referencia de literatura, no datos extraídos píxel a píxel |
 | Geología en un punto nuevo (sondeo) | No se inventa | Se pone **en cero** (desconocido, no "ausente") |
 | Satélites Landsat 9, Sentinel-1, Suomi NPP | Perfil recomendado de observación por sitio | **No entran al puntaje.** No procesamos imágenes todavía |
 | Pesos de cada blanco | Criterio del equipo, justificado por misión | No aprendidos con datos (no existe una "verdad" de análogos para entrenar) |
 
-**Frase modelo:** *"El clima y el relieve son datos reales de NASA y Copernicus para los 35 sitios. La geología del catálogo la asignamos nosotros a partir de la literatura y está marcada así en el código. En puntos nuevos no la inventamos: la dejamos en cero. Reemplazar eso con datos espectrales es nuestro siguiente sprint."*
+**Frase modelo:** *"El clima y el relieve son datos reales de NASA y Copernicus para los 60 sitios. La geología del catálogo la asignamos nosotros a partir de la literatura y está marcada así en el código. En puntos nuevos no la inventamos: la dejamos en cero. Reemplazar eso con datos espectrales es nuestro siguiente sprint."*
 
 ---
 
@@ -157,7 +161,7 @@ Por tiempo del hackathon priorizamos datos que se pueden consultar por API en se
 Son el perfil de observación recomendado para cada sitio. Hoy no procesamos sus imágenes ni entran al puntaje; decirlo así evita que parezca que exageramos.
 
 **"¿Qué pasa si la API de NASA se cae durante la demo?"**
-Reintenta 3 veces. Si sigue fallando, usa un clima de respaldo y lo marca como `fallback` con el motivo. Además, los 35 sitios ya están precalculados con datos reales, así que el catálogo funciona sin internet.
+Reintenta 3 veces. Si sigue fallando, usa un clima de respaldo y lo marca como `fallback` con el motivo. Además, los 60 sitios ya están precalculados con datos reales, así que el catálogo funciona sin internet.
 
 ### C. Técnica e ingeniería
 
@@ -168,7 +172,7 @@ Nuestro: el motor de puntaje completo, el muestreo y cálculo de pendiente del D
 Para que el motor no dependa de librerías pesadas, sea reproducible (semilla fija, orden fijo por ID) y fácil de auditar. Son unas 70 líneas.
 
 **"¿Cómo garantizan que el código es correcto?"**
-45 tests en Python y 4 archivos de tests en el frontend, ejecutados en GitHub Actions en cada cambio. Validamos rangos de entrada (latitud, temperatura, humedad, presión) y rechazamos valores inválidos en vez de calcular con basura.
+270 tests en Python y 53 tests en el frontend (5 archivos de prueba), ejecutados en GitHub Actions en cada cambio. Validamos rangos de entrada (latitud, temperatura, humedad, presión) y rechazamos valores inválidos en vez de calcular con basura.
 
 **"¿Escala a miles de puntos?"**
 El cuello de botella son las llamadas a las APIs externas, no el cálculo. La búsqueda en grilla está limitada a 10×10 por eso. Para escalar: caché de resultados por coordenada y procesamiento en lote.
@@ -218,7 +222,7 @@ Responder sin titubear: *"La geología del catálogo es asignada por nosotros y 
 
 | No decir | Decir en su lugar |
 | :--- | :--- |
-| "Galápagos es igual a la Luna" | "Galápagos es el segundo mejor análogo de 35 para los tubos de lava de Mare Tranquillitatis" |
+| "Galápagos es igual a la Luna" | "Galápagos es el segundo mejor análogo de 60 para los tubos de lava de Mare Tranquillitatis" |
 | "Procesamos imágenes de Landsat y Sentinel" | "Definimos qué sensor usar en cada sitio; integrarlo es el siguiente paso" |
 | "Usamos inteligencia artificial / machine learning" | "Usamos agrupamiento K-Means y vecinos cercanos para comparar sitios" |
 | "Todos los datos son medidos" | "Clima y relieve son medidos; la geología del catálogo es asignada y está documentada" |
@@ -251,7 +255,7 @@ Para no pisarse ni quedarse callados, cada pregunta tiene un dueño. Si el dueñ
 1. No disculparse más de una vez. Decir: *"Pasamos al respaldo grabado."*
 2. Abrir el video de respaldo (tenerlo descargado, no en streaming).
 3. Si tampoco hay video: mostrar `docs/presentacion_jurado.html` y narrar los 3 clics de la lámina 5.
-4. El catálogo de 35 sitios funciona sin internet porque está precalculado; solo el sondeo de coordenadas nuevas necesita red.
+4. El catálogo de 60 sitios funciona sin internet porque está precalculado; solo el sondeo de coordenadas nuevas necesita red.
 
 ---
 
