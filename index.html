@@ -79,24 +79,26 @@
     }
 
     .brand-lockup {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
     }
 
+    .brand-lockup svg,
     .brand-lockup img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1.5px solid var(--line-gold);
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 12px rgba(247, 238, 215, 0.22));
     }
 
     .brand-wordmark {
-      font-family: var(--font-brand);
-      font-size: 1.75rem;
-      letter-spacing: 0.22em;
-      color: #F8FAFC;
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1.5rem;
+      letter-spacing: 0.26em;
+      color: #F7EED7;
+      line-height: 1;
     }
 
     .explorer-pill {
@@ -632,7 +634,19 @@
 
   <header class="top-hud">
     <div class="brand-lockup">
-      <img src="assets/brand/atlania-isotipo-color.png" alt="Isotipo ATLANIA" />
+      <svg viewBox="0 0 256 256" fill="none" aria-hidden="true">
+        <circle cx="128" cy="128" r="124" fill="#091124" />
+        <path d="M117 44 A86 86 0 1 0 139 44" stroke="#F7EED7" stroke-width="7.5" stroke-linecap="round" />
+        <path d="M128 24 L133.5 55 L154 61 L133.5 66.5 L128 84 L122.5 66.5 L102 61 L122.5 55 Z" fill="#F7EED7" />
+        <circle cx="81" cy="94" r="11.5" fill="#D5D8DC" />
+        <circle cx="174" cy="94" r="12" fill="#E0783C" />
+        <path d="M52 152 Q128 112 204 152" stroke="#4989C8" stroke-width="7.5" stroke-linecap="round" />
+        <path d="M56 184 Q128 144 196 177 Q152 183 108 188 Q80 190 56 184 Z" fill="#485E33" />
+        <path d="M108 188 Q154 170 195 178 Q162 212 108 188 Z" fill="#7A3E1E" />
+        <path d="M62 183 Q106 182 128 194 Q156 208 188 182" stroke="#F7EED7" stroke-width="6.5" stroke-linecap="round" />
+        <path d="M128 88 L88 164 Q76 179 54 188 Q82 178 102 162 L128 112 L154 162 Q174 178 198 180 Q176 170 166 156 Z" fill="#F7EED7" />
+        <path d="M94 164 Q128 150 162 164 L154 154 Q128 143 102 154 Z" fill="#F7EED7" />
+      </svg>
       <span class="brand-wordmark">ATLANIA</span>
     </div>
 
@@ -791,18 +805,18 @@
       </div>
     </section>
 
-    <!-- SLIDE 5: DEMO EN VIVO -->
+    <!-- SLIDE 5: HALLAZGOS Y EXPLORADOR -->
     <section class="slide">
       <div class="slide-inner">
         <div class="split-2">
           <div>
-            <h2 class="slide-title">Demostración en vivo: de la Luna a Ecuador en tres pasos.</h2>
+            <h2 class="slide-title">Hallazgos en Ecuador frente a la Luna y Marte.</h2>
             <p class="lead">
-              En <strong>Terra Explorer</strong> recorremos el catálogo global, inspeccionamos sitios sub-explorados y sondeamos coordenadas en tiempo real.
+              Al cruzar los 35 sitios en <strong>Terra Explorer</strong>, los ambientes volcánicos de Galápagos y los Andes destacan entre los mejores análogos del catálogo:
             </p>
             <div class="asi-readout">
               <div class="asi-readout-header">
-                <span class="asi-readout-pair">CASO DESTACADO · GALÁPAGOS ↔ MARE TRANQUILLITATIS</span>
+                <span class="asi-readout-pair">GALÁPAGOS LAVA TUBES ↔ MARE TRANQUILLITATIS</span>
                 <span class="asi-readout-score">87.5 <small style="font-size:0.9rem;color:var(--text-secondary);">/ 100</small></span>
               </div>
               <div class="asi-bars">
@@ -837,24 +851,24 @@
 
           <ol class="demo-steps">
             <li>
-              <span class="demo-step-tag">PASO 01</span>
+              <span class="demo-step-tag">87.5 / 100</span>
               <div>
-                <div class="demo-step-title">Elegir blanco lunar o marciano</div>
-                <p class="demo-step-desc">Seleccionar <strong>Mare Tranquillitatis</strong> o <strong>Jezero Crater</strong> y observar cómo cambia el ranking de los 35 sitios.</p>
+                <div class="demo-step-title">Galápagos &amp; Sierra Negra (Luna)</div>
+                <p class="demo-step-desc">2.º lugar mundial frente a <strong>Mare Tranquillitatis</strong> para pruebas de robótica subterránea y hábitats en tubos de lava basáltica.</p>
               </div>
             </li>
             <li>
-              <span class="demo-step-tag">PASO 02</span>
+              <span class="demo-step-tag">68.4 / 100</span>
               <div>
-                <div class="demo-step-title">Inspeccionar Galápagos y los Andes</div>
-                <p class="demo-step-desc">Abrir el radar de 5 ejes de <strong>Galápagos Lava Tubes (87.5/100)</strong> o <strong>Chimborazo</strong> y revisar sus fortalezas y límites.</p>
+                <div class="demo-step-title">Quilotoa, Reventador &amp; Sangay (Marte)</div>
+                <p class="demo-step-desc">Calderas con sulfatos y escarpes empinados análogos a las paredes estratificadas de <strong>Valles Marineris</strong>.</p>
               </div>
             </li>
             <li>
-              <span class="demo-step-tag">PASO 03</span>
+              <span class="demo-step-tag">59.9 / 100</span>
               <div>
-                <div class="demo-step-title">Sondear coordenada y exportar a QGIS</div>
-                <p class="demo-step-desc">Hacer clic en cualquier punto del mapa 3D para consultar NASA POWER en vivo y descargar el dossier en <strong>GeoJSON</strong>.</p>
+                <div class="demo-step-title">Antisana, Chimborazo &amp; Cotopaxi (Polo Sur)</div>
+                <p class="demo-step-desc">Terreno volcánico glaciar y periglaciar sobre 4.800 msnm frente a <strong>Shackleton</strong> y <strong>Mons Mouton</strong>.</p>
               </div>
             </li>
           </ol>
