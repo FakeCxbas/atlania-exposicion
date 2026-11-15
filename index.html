@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATLANIA — Presentación Oficial | NASA Space Apps 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    @font-face {
+      font-family: "Hello Paris";
+      src: url("assets/fonts/HelloParis.woff2") format("woff2"),
+           url("assets/fonts/HelloParisSerif.ttf") format("truetype");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg-space: #070a14;
+      --text-primary: #F2EFE9;
+      --text-secondary: #B0B8C8;
+      --text-muted: #7E879B;
+      --accent-gold: #C5A36D;
+      --accent-earth: #38BDF8;
+      --accent-mars: #E07A5F;
+      --line-subtle: rgba(242, 239, 233, 0.16);
+      --line-gold: rgba(197, 163, 109, 0.45);
+      --font-brand: "Hello Paris", "Cormorant Garamond", Georgia, serif;
+      --font-serif: "Cormorant Garamond", Georgia, serif;
+      --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-space);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #webgl-stage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .vignette-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(7, 10, 20, 0.18) 0%, rgba(7, 10, 20, 0.76) 100%),
+        linear-gradient(180deg, rgba(7, 10, 20, 0.65) 0%, rgba(7, 10, 20, 0.25) 25%, rgba(7, 10, 20, 0.45) 75%, rgba(7, 10, 20, 0.85) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Minimal floating brand & explorer link */
+    .top-hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      padding: 0 clamp(2rem, 5vw, 4.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-lockup img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--line-gold);
+    }
+
+    .brand-wordmark {
+      font-family: var(--font-brand);
+      font-size: 1.1rem;
+      letter-spacing: 0.24em;
+      color: #F8FAFC;
+    }
+
+    .explorer-pill {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.92);
+      color: #070a14;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.18s ease, background-color 0.18s ease;
+    }
+
+    .explorer-pill:hover {
+      transform: translateY(-1px);
+      background: #FFFFFF;
+    }
+
+    .explorer-pill:focus-visible, .cta-link:focus-visible {
+      outline: 2px solid var(--accent-earth);
+      outline-offset: 3px;
+    }
+
+    /* Slides */
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      z-index: 10;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 88px clamp(2rem, 6vw, 6rem) 56px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.42s ease, transform 0.42s ease, visibility 0.42s;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .slide-inner {
+      max-width: 1220px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Slide 1 Hero */
+    .hero-center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 70vh;
+    }
+
+    .atlania-hero-title {
+      font-family: var(--font-brand);
+      font-size: clamp(4.5rem, 10.5vw, 8.4rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: 0.08em;
+      color: #F8FAFC;
+      text-shadow:
+        0 0 14px rgba(255, 255, 255, 0.7),
+        0 0 36px rgba(224, 247, 255, 0.42),
+        0 0 72px rgba(56, 189, 248, 0.3);
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+      color: var(--accent-gold);
+      margin-bottom: 1.15rem;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+    }
+
+    .hero-question {
+      font-size: clamp(1.08rem, 1.65vw, 1.35rem);
+      font-weight: 400;
+      color: #F8FAFC;
+      max-width: 50ch;
+      line-height: 1.55;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Floating satellites on Slide 1 */
+    .sat-callout {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+
+    .sat-callout img {
+      width: clamp(115px, 14vw, 185px);
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.75));
+      will-change: transform;
+    }
+
+    @keyframes sat-drift-a {
+      0%   { transform: translate(0, 0) rotate(0deg); }
+      25%  { transform: translate(10px, -14px) rotate(1.5deg); }
+      50%  { transform: translate(18px, -4px) rotate(3deg); }
+      75%  { transform: translate(6px, 10px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    @keyframes sat-drift-b {
+      0%   { transform: translate(0, 0) rotate(0deg); }
+      33%  { transform: translate(-14px, 10px) rotate(-2deg); }
+      66%  { transform: translate(-6px, -12px) rotate(-3.5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    @keyframes sat-drift-c {
+      0%   { transform: translate(0, 0) rotate(0deg); }
+      50%  { transform: translate(-16px, -10px) rotate(2.5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .sat-left img         { animation: sat-drift-a 14s ease-in-out infinite; }
+    .sat-right-top img    { animation: sat-drift-b 17s ease-in-out infinite; animation-delay: -4s; }
+    .sat-right-bottom img { animation: sat-drift-c 12s ease-in-out infinite; animation-delay: -7s; }
+
+    .sat-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    .sat-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-earth);
+      box-shadow: 0 0 10px var(--accent-earth);
+      animation: sat-blink 2.4s ease-in-out infinite;
+    }
+
+    @keyframes sat-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .sat-left         { left: 0; top: 4%; flex-direction: column; align-items: flex-start; }
+    .sat-right-top    { right: 0; top: 2%; flex-direction: column; align-items: flex-end; }
+    .sat-right-bottom { right: 2%; bottom: 2%; flex-direction: column; align-items: flex-end; }
+
+    /* Editorial Slide Typography (Cormorant Garamond — clean, no ligature collisions) */
+    h2.slide-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+      font-weight: 600;
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      color: #F8FAFC;
+      margin-bottom: 1rem;
+      max-width: 24ch;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+    }
+
+    .lead {
+      font-size: clamp(1.05rem, 1.45vw, 1.24rem);
+      line-height: 1.55;
+      color: var(--text-secondary);
+      max-width: 62ch;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+    }
+
+    .lead strong { color: #F8FAFC; font-weight: 600; }
+
+    /* Editorial Columns (Hairlines, no boxed cards) */
+    .editorial-cols-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 3vw, 2.75rem);
+      margin-top: 2.25rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--line-subtle);
+    }
+
+    .editorial-col h3 {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 0.55rem;
+    }
+
+    .editorial-col p {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .col-accent-line {
+      width: 32px;
+      height: 2px;
+      background: var(--accent-gold);
+      margin-bottom: 0.9rem;
+    }
+
+    .col-accent-line.mars  { background: var(--accent-mars); }
+    .col-accent-line.earth { background: var(--accent-earth); }
+
+    /* Big Typographic Metrics (Slide 3) */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--line-subtle);
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .metric-item {
+      padding-left: 1.25rem;
+      border-left: 2px solid var(--line-gold);
+    }
+
+    .metric-item:nth-child(2) { border-left-color: var(--accent-earth); }
+    .metric-item:nth-child(3) { border-left-color: var(--accent-mars); }
+
+    .metric-num {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 5vw, 4.4rem);
+      font-weight: 600;
+      line-height: 0.95;
+      color: #F8FAFC;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .metric-desc {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    /* Target Reference Strip */
+    .targets-ledger {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+      margin-top: 1.5rem;
+      font-size: 0.92rem;
+    }
+
+    .target-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.08em;
+    }
+
+    .target-list {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .target-list strong { color: #F8FAFC; font-weight: 500; }
+
+    /* Slide 4 Architectural Ledger */
+    .arch-ledger {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--line-subtle);
+      border-bottom: 1px solid var(--line-subtle);
+      background: linear-gradient(90deg, rgba(7, 10, 20, 0.55), rgba(7, 10, 20, 0.35));
+      backdrop-filter: blur(6px);
+    }
+
+    .arch-col {
+      padding-right: 1rem;
+      border-right: 1px solid var(--line-subtle);
+    }
+
+    .arch-col:last-child { border-right: none; padding-right: 0; }
+
+    .arch-col h3 {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 0.35rem;
+    }
+
+    .arch-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-earth);
+      margin-bottom: 0.55rem;
+    }
+
+    .arch-col p {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .arch-footnotes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+      margin-top: 1.35rem;
+      font-size: 0.94rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .arch-footnotes strong { color: #F8FAFC; }
+
+    /* Slide 5 Demo Split */
+    .split-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 4vw, 4rem);
+      align-items: center;
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-top: 1.75rem;
+      padding: 0.85rem 1.7rem;
+      min-height: 44px;
+      border-radius: 999px;
+      background: var(--accent-gold);
+      color: #070a14;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .cta-link:hover {
+      transform: translateY(-1px);
+      background: #d6b680;
+    }
+
+    .demo-steps {
+      list-style: none;
+      border-top: 1px solid var(--line-subtle);
+    }
+
+    .demo-steps li {
+      padding: 1.15rem 0;
+      border-bottom: 1px solid var(--line-subtle);
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 1rem;
+      align-items: baseline;
+    }
+
+    .demo-step-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+    }
+
+    .demo-step-title {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 0.25rem;
+    }
+
+    .demo-step-desc {
+      font-size: 0.94rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    /* Slide 6 Impact Split */
+    .impact-split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--line-subtle);
+    }
+
+    .impact-highlight {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      line-height: 1.25;
+      color: #F8FAFC;
+      margin-bottom: 0.85rem;
+    }
+
+    .impact-highlight span { color: var(--accent-gold); }
+
+    .impact-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .impact-body strong { color: #F8FAFC; }
+
+    /* Slide 7 Closing Quote */
+    .closing-quote {
+      margin-top: 2.25rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line-gold);
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+      font-style: italic;
+      color: #F8FAFC;
+      max-width: 46ch;
+    }
+
+    @media (max-width: 980px) {
+      .sat-callout { display: none; }
+      .split-2, .editorial-cols-3, .metrics-strip, .targets-ledger, .arch-ledger, .arch-footnotes, .impact-split {
+        grid-template-columns: 1fr;
+      }
+      .arch-col { border-right: none; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1rem; }
+      body { overflow-y: auto; }
+      .slide { position: relative; min-height: 100vh; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide, .cta-link, .explorer-pill { transition: none !important; }
+      .sat-callout img, .sat-dot { animation: none !important; }
+    }
+
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      html, body {
+        overflow: visible;
+        height: auto;
+        background: #070a14 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .top-hud { display: none !important; }
+      .slide {
+        position: relative !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        width: 16in;
+        height: 9in;
+        page-break-after: always;
+        break-after: page;
+        background: #070a14;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="webgl-stage" aria-hidden="true"></canvas>
+  <div class="vignette-overlay" aria-hidden="true"></div>
+
+  <header class="top-hud">
+    <div class="brand-lockup">
+      <img src="assets/brand/atlania-isotipo-color.png" alt="Isotipo ATLANIA" />
+      <span class="brand-wordmark">ATLANIA</span>
+    </div>
+
+    <div class="hud-actions">
+      <a class="explorer-pill" href="http://localhost:3000/explorer" target="_blank" rel="noopener noreferrer">
+        ABRIR EXPLORADOR ↗
+      </a>
+    </div>
+  </header>
+
+  <main class="deck" id="deck" aria-live="polite">
+    <!-- SLIDE 1: PORTADA -->
+    <section class="slide active">
+      <div class="slide-inner hero-center">
+        <div class="sat-callout sat-left">
+          <img src="assets/nasa/suomi-npp-cutout.png" alt="Satélite Suomi NPP" />
+          <div class="sat-label"><span class="sat-dot"></span> SUOMI NPP · VIIRS</div>
+        </div>
+        <div class="sat-callout sat-right-top">
+          <img src="assets/nasa/sentinel1-cutout.png" alt="Satélite Sentinel-1" />
+          <div class="sat-label"><span class="sat-dot"></span> SENTINEL-1 · C-SAR</div>
+        </div>
+        <div class="sat-callout sat-right-bottom">
+          <img src="assets/nasa/landsat9-cutout.png" alt="Satélite Landsat 9" />
+          <div class="sat-label"><span class="sat-dot"></span> LANDSAT 9 · OLI-2</div>
+        </div>
+
+        <h1 class="atlania-hero-title">ATLANIA</h1>
+        <p class="hero-tagline">Somewhere between Earth and the stars.</p>
+        <p class="hero-question">
+          ¿Y si para comprender otros planetas primero tuviéramos que volver a descubrir el nuestro?
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: EL PROBLEMA -->
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="slide-title">Elegir sitios análogos "a ojo" frena la preparación hacia la Luna y Marte.</h2>
+        <p class="lead">
+          Las misiones Artemis y Marte necesitan entrenar rovers, trajes y hábitats en la Tierra, pero el método actual tiene tres limitaciones claras:
+        </p>
+
+        <div class="editorial-cols-3">
+          <article class="editorial-col">
+            <div class="col-accent-line mars"></div>
+            <h3>Sobresaturación geográfica</h3>
+            <p>
+              Atacama, Hawái, Islandia y la Antártida concentran gran parte de la literatura, dejando fuera volcanes, salares y tubos de lava en los Andes y el Pacífico.
+            </p>
+          </article>
+          <article class="editorial-col">
+            <div class="col-accent-line"></div>
+            <h3>Similitud visual sin métrica</h3>
+            <p>
+              Que un paisaje se parezca en fotografía no garantiza equivalencia térmica, topográfica ni operacional para probar hardware espacial.
+            </p>
+          </article>
+          <article class="editorial-col">
+            <div class="col-accent-line earth"></div>
+            <h3>Límites físicos omitidos</h3>
+            <p>
+              Ningún sitio terrestre replica gravedad lunar o marciana, vacío ni radiación; no documentar dónde se rompe la analogía invalida las pruebas.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: LA SOLUCIÓN -->
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="slide-title">Un atlas cuantitativo que compara la Tierra con 6 destinos reales en la Luna y Marte.</h2>
+        <p class="lead">
+          Creamos <strong>ATLANIA</strong> para transformar datos climáticos y topográficos en un índice auditable de similitud planetaria.
+        </p>
+
+        <div class="metrics-strip">
+          <div class="metric-item">
+            <div class="metric-num">35</div>
+            <div class="metric-title">Sitios terrestres evaluados</div>
+            <p class="metric-desc">100% con climatología real de NASA POWER y relieve medido, incluyendo 8 sitios en Ecuador.</p>
+          </div>
+          <div class="metric-item">
+            <div class="metric-num">6</div>
+            <div class="metric-title">Blancos en Luna y Marte</div>
+            <p class="metric-desc">Ponderación científica adaptada a cada misión: hielo polar, refugio en cuevas o deltas marcianos.</p>
+          </div>
+          <div class="metric-item">
+            <div class="metric-num">5 ejes</div>
+            <div class="metric-title">Índice de Similitud (ASI)</div>
+            <p class="metric-desc">Topografía, geología, térmica, hidrología/hielo y entorno subterráneo, más agrupamiento K-Means.</p>
+          </div>
+        </div>
+
+        <div class="targets-ledger">
+          <div>
+            <div class="target-group-title">LUNA · MISIONES ARTEMIS</div>
+            <p class="target-list">
+              <strong>Shackleton Crater</strong> (Polo Sur, volátiles) ·
+              <strong>Mare Tranquillitatis</strong> (tubos de lava) ·
+              <strong>Mons Mouton</strong> (meseta de aterrizaje Artemis III)
+            </p>
+          </div>
+          <div>
+            <div class="target-group-title">MARTE · EXPLORACIÓN ROBÓTICA Y HUMANA</div>
+            <p class="target-list">
+              <strong>Jezero Crater</strong> (delta lacustre, Perseverance) ·
+              <strong>Olympus Mons</strong> (flanco volcánico) ·
+              <strong>Valles Marineris</strong> (cañón tectónico y sulfatos)
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: DATOS NASA & MOTOR CIENTÍFICO -->
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="slide-title">De telemetría satelital de la NASA al Índice ASI en tiempo real.</h2>
+        <p class="lead">
+          El motor en Python (<strong>asi_engine.py</strong>) cruza datos medidos con límites físicos explícitos por cada sitio:
+        </p>
+
+        <div class="arch-ledger">
+          <div class="arch-col">
+            <div class="arch-meta">01 · CLIMATOLOGÍA</div>
+            <h3>NASA POWER API</h3>
+            <p>7 parámetros: temperatura máx/mín, precipitación, viento, humedad relativa, irradiancia solar y presión superficial.</p>
+          </div>
+          <div class="arch-col">
+            <div class="arch-meta">02 · TOPOGRAFÍA 3D</div>
+            <h3>Copernicus DEM</h3>
+            <p>Muestreo de 5 puntos en cruz (GLO-90) para calcular pendiente central en grados y rugosidad real del terreno.</p>
+          </div>
+          <div class="arch-col">
+            <div class="arch-meta">03 · MOTOR Y CLUSTERING</div>
+            <h3>ASI Engine + K-Means</h3>
+            <p>Similitud acotada en 5 dimensiones, estandarización z-score, K-Means determinista y vecinos más cercanos (k-NN).</p>
+          </div>
+          <div class="arch-col">
+            <div class="arch-meta">04 · RIGOR CIENTÍFICO</div>
+            <h3>Límites de la analogía</h3>
+            <p>Documenta dónde falla cada comparación: gravedad (9.81 vs 1.62/3.71 m/s²), vacío/CO₂, radiación y biología.</p>
+          </div>
+        </div>
+
+        <div class="arch-footnotes">
+          <p>
+            <strong>Sondeo en vivo (/api/evaluate):</strong> Evalúa cualquier coordenada de la Tierra al instante con NASA POWER y el DEM, dejando la geología no medida en cero para no inventar datos.
+          </p>
+          <p>
+            <strong>Reproducibilidad:</strong> 45 pruebas automatizadas en <strong>pytest</strong> + suite en frontend, y catálogo precalculado con respaldo offline si cae la red.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: DEMO EN VIVO -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="split-2">
+          <div>
+            <h2 class="slide-title">Demostración en vivo: de la Luna a Ecuador en tres pasos.</h2>
+            <p class="lead">
+              En <strong>Terra Explorer</strong> recorremos el catálogo global, inspeccionamos sitios sub-explorados y sondeamos coordenadas en tiempo real.
+            </p>
+            <a class="cta-link" href="http://localhost:3000/explorer" target="_blank" rel="noopener noreferrer">
+              Ir a Terra Explorer (/explorer) ↗
+            </a>
+          </div>
+
+          <ol class="demo-steps">
+            <li>
+              <span class="demo-step-tag">PASO 01</span>
+              <div>
+                <div class="demo-step-title">Elegir blanco lunar o marciano</div>
+                <p class="demo-step-desc">Seleccionar <strong>Mare Tranquillitatis</strong> o <strong>Jezero Crater</strong> y observar cómo cambia el ranking de los 35 sitios.</p>
+              </div>
+            </li>
+            <li>
+              <span class="demo-step-tag">PASO 02</span>
+              <div>
+                <div class="demo-step-title">Inspeccionar Galápagos y los Andes</div>
+                <p class="demo-step-desc">Abrir el radar de 5 ejes de <strong>Galápagos Lava Tubes (87.5/100)</strong> o <strong>Chimborazo</strong> y revisar sus fortalezas y límites.</p>
+              </div>
+            </li>
+            <li>
+              <span class="demo-step-tag">PASO 03</span>
+              <div>
+                <div class="demo-step-title">Sondear coordenada y exportar a QGIS</div>
+                <p class="demo-step-desc">Hacer clic en cualquier punto del mapa 3D para consultar NASA POWER en vivo y descargar el dossier en <strong>GeoJSON</strong>.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: IMPACTO Y ESCALABILIDAD -->
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="slide-title">Ecuador y los Andes como laboratorio natural para la exploración espacial.</h2>
+
+        <div class="impact-split">
+          <div>
+            <p class="impact-highlight">
+              Los tubos de lava de <span>Galápagos alcanzan 87.5 / 100</span> frente a Mare Tranquillitatis — el segundo puntaje más alto de los 35 sitios del planeta.
+            </p>
+            <p class="impact-body">
+              Evaluamos <strong>8 enclaves en Ecuador</strong>: Galápagos y Sierra Negra para hábitats subterráneos; <strong>Quilotoa, El Reventador y Sangay</strong> frente a Valles Marineris; y <strong>Antisana, Chimborazo y Cotopaxi</strong> para pruebas de movilidad y perforación en alta montaña.
+            </p>
+          </div>
+          <div>
+            <p class="impact-body" style="margin-bottom: 1.25rem;">
+              <strong>Adopción abierta y sin costos de licencia:</strong> Construido sobre APIs públicas gratuitas y código abierto (MIT).
+            </p>
+            <p class="impact-body">
+              Permite a <strong>universidades, grupos de robótica y agencias</strong> filtrar dónde hacer campañas de campo y exportar resultados directamente a <strong>QGIS</strong> sin meses de prospección previa.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: ROADMAP Y CIERRE -->
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="slide-title">De la prospección satelital a la validación en terreno.</h2>
+
+        <div class="editorial-cols-3">
+          <article class="editorial-col">
+            <div class="col-accent-line earth"></div>
+            <h3>1. Mineralogía orbital</h3>
+            <p>Integrar reflectancia espectral (Landsat 9 OLI-2 / ASTER) y radar Sentinel-1 C-SAR para medir geología y rugosidad automáticamente.</p>
+          </article>
+          <article class="editorial-col">
+            <div class="col-accent-line"></div>
+            <h3>2. Validación universitaria</h3>
+            <p>Campañas conjuntas con facultades de geología y robótica en Ecuador para contrastar el índice con mediciones en campo.</p>
+          </article>
+          <article class="editorial-col">
+            <div class="col-accent-line mars"></div>
+            <h3>3. Atlas colaborativo</h3>
+            <p>Apertura del repositorio para que investigadores sumen nuevos sitios candidatos con revisión reproducible.</p>
+          </article>
+        </div>
+
+        <blockquote class="closing-quote">
+          "ATLANIA: transformando datos abiertos de la NASA en la hoja de ruta terrestre hacia la Luna y Marte. Muchas gracias."
+        </blockquote>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/vendor/three.min.js"></script>
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let current = 0;
+
+      const scenePresets = [
+        { camX: 0, camY: 0.2, camZ: 7.4, earthX: 0, earthY: -0.35, earthScale: 1.45, moonOp: 1, marsOp: 1, demOp: 0 },
+        { camX: -0.6, camY: 0.1, camZ: 6.2, earthX: 2.35, earthY: -0.2, earthScale: 1.35, moonOp: 0.85, marsOp: 0.85, demOp: 0 },
+        { camX: 0.4, camY: 0.4, camZ: 7.0, earthX: 2.4, earthY: -0.6, earthScale: 1.25, moonOp: 1, marsOp: 1, demOp: 0 },
+        { camX: 0, camY: 1.2, camZ: 6.4, earthX: -3.2, earthY: 1.8, earthScale: 0.85, moonOp: 0.25, marsOp: 0.25, demOp: 1 },
+        { camX: 0.3, camY: -0.1, camZ: 5.8, earthX: -2.1, earthY: -0.15, earthScale: 1.45, moonOp: 0.4, marsOp: 0.4, demOp: 0.15 },
+        { camX: -0.2, camY: 0.3, camZ: 6.6, earthX: 0, earthY: -1.1, earthScale: 1.5, moonOp: 0.9, marsOp: 0.9, demOp: 0 },
+        { camX: 0, camY: 0.15, camZ: 7.8, earthX: 0, earthY: -0.9, earthScale: 1.35, moonOp: 1, marsOp: 1, demOp: 0 },
+      ];
+
+      function goTo(index) {
+        if (index < 0 || index >= slides.length) return;
+        slides[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+          e.preventDefault();
+          goTo(current + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          goTo(current - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          goTo(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          goTo(slides.length - 1);
+        }
+      });
+
+      const canvas = document.getElementById('webgl-stage');
+      if (!window.THREE || !canvas) return;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 0.2, 7.4);
+
+      scene.add(new THREE.AmbientLight(0x8899bb, 0.7));
+      const sunLight = new THREE.DirectionalLight(0xfff5e4, 2.1);
+      sunLight.position.set(6, 4, 6);
+      scene.add(sunLight);
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.9);
+      rimLight.position.set(-6, -2, -4);
+      scene.add(rimLight);
+
+      function makePlanetTexture(type) {
+        const c = document.createElement('canvas');
+        c.width = 512;
+        c.height = 256;
+        const ctx = c.getContext('2d');
+
+        if (type === 'earth') {
+          const grad = ctx.createLinearGradient(0, 0, 0, 256);
+          grad.addColorStop(0, '#1e3a5f');
+          grad.addColorStop(0.5, '#0c2340');
+          grad.addColorStop(1, '#183454');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 512, 256);
+          ctx.fillStyle = '#2d5a4c';
+          for (let i = 0; i < 42; i++) {
+            const x = (Math.sin(i * 12.9898) * 0.5 + 0.5) * 512;
+            const y = (Math.cos(i * 78.233) * 0.5 + 0.5) * 200 + 28;
+            const r = 12 + (i % 5) * 9;
+            ctx.beginPath();
+            ctx.ellipse(x, y, r * 1.4, r * 0.85, i, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (type === 'moon') {
+          ctx.fillStyle = '#6f7680';
+          ctx.fillRect(0, 0, 512, 256);
+          for (let i = 0; i < 90; i++) {
+            const x = (Math.sin(i * 91.7) * 0.5 + 0.5) * 512;
+            const y = (Math.cos(i * 31.3) * 0.5 + 0.5) * 256;
+            const r = 3 + (i % 6) * 3;
+            ctx.fillStyle = i % 2 === 0 ? 'rgba(40,44,52,0.45)' : 'rgba(200,205,215,0.22)';
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else {
+          const grad = ctx.createLinearGradient(0, 0, 512, 256);
+          grad.addColorStop(0, '#9c4a35');
+          grad.addColorStop(0.5, '#c25e44');
+          grad.addColorStop(1, '#7a3423');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 512, 256);
+        }
+        return new THREE.CanvasTexture(c);
+      }
+
+      const starGeo = new THREE.BufferGeometry();
+      const starCount = 900;
+      const starPos = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount * 3; i += 3) {
+        starPos[i] = (Math.random() - 0.5) * 36;
+        starPos[i + 1] = (Math.random() - 0.5) * 24;
+        starPos[i + 2] = -4 - Math.random() * 18;
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      const stars = new THREE.Points(
+        starGeo,
+        new THREE.PointsMaterial({ color: 0xe4dfd5, size: 0.045, transparent: true, opacity: 0.75 })
+      );
+      scene.add(stars);
+
+      const earthGroup = new THREE.Group();
+      const earthMat = new THREE.MeshStandardMaterial({
+        map: makePlanetTexture('earth'),
+        roughness: 0.65,
+        metalness: 0.08,
+      });
+      const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(1.35, 48, 48), earthMat);
+      earthGroup.add(earthMesh);
+
+      const atmoMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(1.42, 48, 48),
+        new THREE.MeshBasicMaterial({
+          color: 0x38bdf8,
+          transparent: true,
+          opacity: 0.14,
+          side: THREE.BackSide,
+        })
+      );
+      earthGroup.add(atmoMesh);
+      scene.add(earthGroup);
+
+      const moonMat = new THREE.MeshStandardMaterial({
+        map: makePlanetTexture('moon'),
+        roughness: 0.9,
+        transparent: true,
+        opacity: 1,
+      });
+      const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.38, 32, 32), moonMat);
+      moonMesh.position.set(-2.35, 1.35, -0.8);
+      scene.add(moonMesh);
+
+      const marsMat = new THREE.MeshStandardMaterial({
+        map: makePlanetTexture('mars'),
+        roughness: 0.85,
+        transparent: true,
+        opacity: 1,
+      });
+      const marsMesh = new THREE.Mesh(new THREE.SphereGeometry(0.46, 32, 32), marsMat);
+      marsMesh.position.set(2.45, 1.4, -1.0);
+      scene.add(marsMesh);
+
+      const demGeo = new THREE.PlaneGeometry(8.5, 4.8, 38, 22);
+      const posAttr = demGeo.attributes.position;
+      for (let i = 0; i < posAttr.count; i++) {
+        const x = posAttr.getX(i);
+        const y = posAttr.getY(i);
+        const z = Math.sin(x * 1.1) * Math.cos(y * 1.2) * 0.42 + Math.sin(x * 2.5 + y) * 0.14;
+        posAttr.setZ(i, z);
+      }
+      demGeo.computeVertexNormals();
+      const demMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        wireframe: true,
+        transparent: true,
+        opacity: 0,
+      });
+      const demMesh = new THREE.Mesh(demGeo, demMat);
+      demMesh.rotation.x = -Math.PI / 2.5;
+      demMesh.position.set(0, -1.55, -0.5);
+      scene.add(demMesh);
+
+      if (window.location.protocol !== 'file:') {
+        const loader = new THREE.TextureLoader();
+        loader.load('assets/nasa/earth-equirectangular.jpg', (tex) => {
+          earthMat.map = tex;
+          earthMat.needsUpdate = true;
+        });
+        loader.load('assets/nasa/moon-equirectangular.jpg', (tex) => {
+          moonMat.map = tex;
+          moonMat.needsUpdate = true;
+        });
+        loader.load('assets/nasa/mars-equirectangular.jpg', (tex) => {
+          marsMat.map = tex;
+          marsMat.needsUpdate = true;
+        });
+      }
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let t = 0;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const p = scenePresets[current];
+        const lerp = prefersReducedMotion ? 1 : 0.06;
+
+        camera.position.x += (p.camX - camera.position.x) * lerp;
+        camera.position.y += (p.camY - camera.position.y) * lerp;
+        camera.position.z += (p.camZ - camera.position.z) * lerp;
+
+        earthGroup.position.x += (p.earthX - earthGroup.position.x) * lerp;
+        earthGroup.position.y += (p.earthY - earthGroup.position.y) * lerp;
+        const s = earthGroup.scale.x + (p.earthScale - earthGroup.scale.x) * lerp;
+        earthGroup.scale.set(s, s, s);
+
+        moonMat.opacity += (p.moonOp - moonMat.opacity) * lerp;
+        marsMat.opacity += (p.marsOp - marsMat.opacity) * lerp;
+        demMat.opacity += (p.demOp * 0.22 - demMat.opacity) * lerp;
+
+        if (!prefersReducedMotion) {
+          t += 0.008;
+          earthMesh.rotation.y += 0.0018;
+          moonMesh.rotation.y += 0.0022;
+          marsMesh.rotation.y += 0.002;
+          stars.rotation.y += 0.0002;
+          demMesh.rotation.z = Math.sin(t * 0.25) * 0.08;
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    })();
+  </script>
+</body>
+</html>
