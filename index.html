@@ -453,25 +453,64 @@
       align-items: center;
     }
 
-    .cta-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
+    .asi-readout {
       margin-top: 1.75rem;
-      padding: 0.85rem 1.7rem;
-      min-height: 44px;
-      border-radius: 999px;
-      background: var(--accent-gold);
-      color: #070a14;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: transform 0.2s, background-color 0.2s;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line-subtle);
     }
 
-    .cta-link:hover {
-      transform: translateY(-1px);
-      background: #d6b680;
+    .asi-readout-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.9rem;
+    }
+
+    .asi-readout-pair {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--accent-gold);
+    }
+
+    .asi-readout-score {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      line-height: 1;
+    }
+
+    .asi-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .asi-bar-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 44px;
+      gap: 0.75rem;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+    }
+
+    .asi-bar-track {
+      height: 3px;
+      background: rgba(242, 239, 233, 0.14);
+      position: relative;
+    }
+
+    .asi-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-earth));
+    }
+
+    .asi-bar-val {
+      text-align: right;
+      color: #F8FAFC;
     }
 
     .demo-steps {
@@ -761,9 +800,39 @@
             <p class="lead">
               En <strong>Terra Explorer</strong> recorremos el catálogo global, inspeccionamos sitios sub-explorados y sondeamos coordenadas en tiempo real.
             </p>
-            <a class="cta-link" href="https://atlania-beta.vercel.app/explorer" target="_blank" rel="noopener noreferrer">
-              Ir a Terra Explorer (/explorer) ↗
-            </a>
+            <div class="asi-readout">
+              <div class="asi-readout-header">
+                <span class="asi-readout-pair">CASO DESTACADO · GALÁPAGOS ↔ MARE TRANQUILLITATIS</span>
+                <span class="asi-readout-score">87.5 <small style="font-size:0.9rem;color:var(--text-secondary);">/ 100</small></span>
+              </div>
+              <div class="asi-bars">
+                <div class="asi-bar-row">
+                  <span>Subterráneo</span>
+                  <div class="asi-bar-track"><div class="asi-bar-fill" style="width:100%"></div></div>
+                  <span class="asi-bar-val">100.0</span>
+                </div>
+                <div class="asi-bar-row">
+                  <span>Topografía</span>
+                  <div class="asi-bar-track"><div class="asi-bar-fill" style="width:95%"></div></div>
+                  <span class="asi-bar-val">95.0</span>
+                </div>
+                <div class="asi-bar-row">
+                  <span>Térmica</span>
+                  <div class="asi-bar-track"><div class="asi-bar-fill" style="width:91.5%"></div></div>
+                  <span class="asi-bar-val">91.5</span>
+                </div>
+                <div class="asi-bar-row">
+                  <span>Hidrología</span>
+                  <div class="asi-bar-track"><div class="asi-bar-fill" style="width:79.9%"></div></div>
+                  <span class="asi-bar-val">79.9</span>
+                </div>
+                <div class="asi-bar-row">
+                  <span>Geología</span>
+                  <div class="asi-bar-track"><div class="asi-bar-fill" style="width:71.8%"></div></div>
+                  <span class="asi-bar-val">71.8</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <ol class="demo-steps">
